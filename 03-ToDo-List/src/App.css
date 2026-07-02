@@ -1,0 +1,48 @@
+.input-area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.input-area button {
+  margin-left: 10px;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 30px;
+  background: white;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.input-area button:hover {
+  background: #f3f3f3;
+}
+
+.delete-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  background: #f3f3f3;
+  color: #222;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background: #e5e5e5;
+}
