@@ -19,6 +19,9 @@ import './App.css';
 
 function App() {
   const [city, setCity] = useState("");
+  const [sunrise, setSunrise] = useState("");
+  const [sunset, setSunset] = useState("");
+  const [sunProgress, setSunProgress] = useState(0);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -110,9 +113,39 @@ if (code === 0) {
     autoplay: true,
   });
 
+
   return () => animation.destroy();
 }, [weather]);
-  
+
+
+
+
+useEffect(() => {
+  if (!sunrise || !sunset) return;
+
+  const updateSunPosition = () => {
+    const now = new Date();
+
+    const sunriseTime = new Date(sunrise);
+    const sunsetTime = new Date(sunset);
+
+    const progress =
+      (now - sunriseTime) / (sunsetTime - sunriseTime);
+
+    const clampedProgress = Math.min(Math.max(progress, 0), 1);
+
+    setSunProgress(clampedProgress);
+  };
+
+  updateSunPosition();
+
+  const timer = setInterval(updateSunPosition, 60000);
+
+  return () => clearInterval(timer);
+
+}, [sunrise, sunset]);
+
+
 
 
   async function searchWeather() {
@@ -143,13 +176,18 @@ if (code === 0) {
       const longitude = data.results[0].longitude;
 
 
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day`;
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
       
       
   
 
       const weatherResponse = await fetch(weatherUrl);
       const weatherData = await weatherResponse.json();
+
+      console.log(weatherData.daily);
+
+      setSunrise(weatherData.daily.sunrise[0]);
+      setSunset(weatherData.daily.sunset[0]);
 
       setWeather(weatherData.current);
     } catch (err) {
@@ -193,10 +231,50 @@ if (code === 0) {
     width: "150px",
     height: "150px",
     margin: "0 auto",
+    
   }}
+  
 ></div>
+<div className="sun-path">
+
+  <div
+    className="sun"
+    style={{
+      left: `${sunProgress * 100}%`,
+      bottom: `${Math.sin(sunProgress * Math.PI) * 100}px`
+    }}
+  >
+    ☀️
+    
+
+  </div>
+
+  <span className="sunrise-label">
+    <img src="sunrise-svgrepo-com (1).svg" alt="" width={50}/>
+    {sunrise && sunrise.slice(11,16)}
+  </span>
+
+  <span className="sunset-label">
+    <img src="sunset.svg" alt="" width={50}/>
+     {sunset && sunset.slice(11,16)}
+  </span>
+
+</div>
         <h2>Weather Info</h2>
         <div className="weather-details">
+          <p className="weather-item">
+             <span>Sunrise:</span>
+          <span className="weather-value">
+         {sunrise && sunrise.slice(11,16)}
+            </span>
+           </p>
+
+<p className="weather-item">
+  <span>Sunset:</span>
+  <span className="weather-value">
+    {sunset && sunset.slice(11,16)}
+  </span>
+</p>
           <p className="weather-item">
             <span>Temperature:</span> 
             <span className="weather-value">{weather.temperature_2m}°C</span>

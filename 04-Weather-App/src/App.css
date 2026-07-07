@@ -138,4 +138,35 @@ h1 {
   color: #0984e3;
 }
 
+.sun-path {
+  width: 300px;
+  height: 150px;
+  margin: 30px auto;
+  position: relative;
+  border-top: 3px solid orange;
+  border-radius: 300px 300px 0 0;
+}
 
+
+.sun {
+  position: absolute;
+  font-size: 35px;
+  transform: translateX(-50%);
+  transition: all 1s ease;
+}
+
+
+.sunrise-label {
+  position: absolute;
+  left: 0;
+  bottom: -30px;
+  font-size: 14px;
+}
+
+
+.sunset-label {
+  position: absolute;
+  right: 0;
+  bottom: -30px;
+  font-size: 14px;
+}
