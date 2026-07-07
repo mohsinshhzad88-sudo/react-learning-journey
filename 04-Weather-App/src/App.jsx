@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useEffect, useRef } from "react";
 import lottie from "lottie-web";
+import fog from "@meteocons/lottie/fill/fog.json";
+import mist from "@meteocons/lottie/fill/mist.json";
+import drizzle from "@meteocons/lottie/fill/drizzle.json";
+import hail from "@meteocons/lottie/fill/hail.json";
+import partlyCloudyDay from "@meteocons/lottie/fill/partly-cloudy-day.json";
+import partlyCloudyNight from "@meteocons/lottie/fill/partly-cloudy-night.json";
 import clearDay from "@meteocons/lottie/fill/clear-day.json";
+import clearNight from "@meteocons/lottie/fill/clear-night.json";
 import cloudy from "@meteocons/lottie/fill/cloudy.json";
 import rain from "@meteocons/lottie/fill/rain.json";
 import snow from "@meteocons/lottie/fill/snow.json";
@@ -23,25 +30,78 @@ useEffect(() => {
  
   iconRef.current.innerHTML = "";
 
-  let animationData = clearDay;
+  let animationData = partlyCloudyNight;
 
-  const code = weather.weather_code;
 
-  if (code === 0) {
-    animationData = clearDay;
-  } else if ([1, 2, 3].includes(code)) {
-    animationData = cloudy;
-  } else if (
-    (code >= 51 && code <= 67) ||
-    (code >= 80 && code <= 82)
-  ) {
-    animationData = rain;
-  } else if (code >= 71 && code <= 77) {
-    animationData = snow;
-  } else if (code >= 95 && code <= 99) {
-    animationData = thunderstorm;
-  }
+const code = weather.weather_code;
+console.log("is_day:", weather.is_day);
+console.log("weather_code:", code);
 
+if (code === 0) {
+   animationData = weather.is_day
+    ? clearDay
+     : clearNight;
+   
+
+  
+
+} else if (code === 1) {
+  // Mainly clear
+   animationData = weather.is_day
+    ? partlyCloudyDay
+    : partlyCloudyNight;
+
+} else if (code === 2) {
+  // Partly cloudy
+  animationData = weather.is_day
+    ? partlyCloudyDay
+    : partlyCloudyNight;
+
+} else if (code === 3) {
+  // Overcast
+  animationData = cloudy;
+
+
+} else if (code === 45) {
+  // Fog
+  animationData = fog;
+
+} else if (code === 48) {
+  // Depositing rime fog
+  animationData = mist;
+
+} else if (code >= 51 && code <= 57) {
+  // Drizzle
+  animationData = drizzle;
+
+} else if (code >= 61 && code <= 67) {
+  // Rain
+  animationData = rain;
+
+} else if (code >= 71 && code <= 77) {
+  // Snow
+  animationData = snow;
+
+} else if (code >= 80 && code <= 82) {
+  // Rain showers
+  animationData = rain;
+
+} else if (code === 85 || code === 86) {
+  // Snow showers
+  animationData = snow;
+
+} else if (code === 95) {
+  // Thunderstorm
+  animationData = thunderstorm;
+
+} else if (code === 96 || code === 99) {
+  // Thunderstorm with hail
+  animationData = hail;
+
+} else {
+  // Fallback
+  animationData = cloudy;
+}
   const animation = lottie.loadAnimation({
     container: iconRef.current,
     renderer: "svg",
@@ -83,7 +143,7 @@ useEffect(() => {
       const longitude = data.results[0].longitude;
 
 
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code`;
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day`;
       
       
   
