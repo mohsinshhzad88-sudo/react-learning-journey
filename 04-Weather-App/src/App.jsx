@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { useEffect, useRef } from "react";
 import lottie from "lottie-web";
 import clearDay from "@meteocons/lottie/fill/clear-day.json";
+import cloudy from "@meteocons/lottie/fill/cloudy.json";
+import rain from "@meteocons/lottie/fill/rain.json";
+import snow from "@meteocons/lottie/fill/snow.json";
+import thunderstorm from "@meteocons/lottie/fill/thunderstorms.json";
 import './App.css';
 
 
@@ -14,14 +18,34 @@ function App() {
    const iconRef = useRef(null); 
 
 
-
 useEffect(() => {
   if (!weather || !iconRef.current) return;
+ 
+  iconRef.current.innerHTML = "";
+
+  let animationData = clearDay;
+
+  const code = weather.weather_code;
+
+  if (code === 0) {
+    animationData = clearDay;
+  } else if ([1, 2, 3].includes(code)) {
+    animationData = cloudy;
+  } else if (
+    (code >= 51 && code <= 67) ||
+    (code >= 80 && code <= 82)
+  ) {
+    animationData = rain;
+  } else if (code >= 71 && code <= 77) {
+    animationData = snow;
+  } else if (code >= 95 && code <= 99) {
+    animationData = thunderstorm;
+  }
 
   const animation = lottie.loadAnimation({
     container: iconRef.current,
     renderer: "svg",
-    animationData: clearDay,
+    animationData,
     loop: true,
     autoplay: true,
   });
