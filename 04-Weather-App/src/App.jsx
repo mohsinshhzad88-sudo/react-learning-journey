@@ -22,6 +22,8 @@ function App() {
   const [sunrise, setSunrise] = useState("");
   const [sunset, setSunset] = useState("");
   const [sunProgress, setSunProgress] = useState(0);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -164,6 +166,9 @@ async function getCurrentLocation() {
 
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
+
+               setLatitude(latitude);
+               setLongitude(longitude);
 
         console.log("GPS Latitude:", latitude);
         console.log("GPS Longitude:", longitude);
@@ -339,15 +344,15 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
 <div className="sun-path">
 
   <div
-    className="sun"
-    style={{
-      left: `${sunProgress * 100}%`,
-      bottom: `${Math.sin(sunProgress * Math.PI) * 100}px`
-    }}
-  >
-    ☀️
-    
-
+  className="sun"
+  style={{
+    left: `${sunProgress * 100}%`,
+    bottom: `${Math.sin(sunProgress * Math.PI) * 150}px`,
+    opacity: Math.sin(sunProgress * Math.PI),
+    transform: "translateX(-50%)"
+  }}
+>
+  ☀️
   </div>
 
   <span className="sunrise-label">
