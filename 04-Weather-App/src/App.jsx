@@ -25,7 +25,16 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   const iconRef = useRef(null); 
+  const iconRef = useRef(null); 
+
+
+
+  useEffect(() => {
+  getCurrentLocation();
+}, []);
+
+
+
 
 
 useEffect(() => {
@@ -145,7 +154,99 @@ useEffect(() => {
 
 }, [sunrise, sunset]);
 
+async function getCurrentLocation() {
+  try {
+    setLoading(true);
+    setError("");
 
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        console.log("GPS Latitude:", latitude);
+        console.log("GPS Longitude:", longitude);
+
+
+        // Get city name from coordinates
+        const response = await fetch(
+          `https://geocoding-api.open-meteo.com/v1/search?latitude=${latitude}&longitude=${longitude}`
+        );
+
+        const data = await response.json();
+
+        console.log(data);
+
+
+        // Set city if available
+        if (data.results && data.results.length > 0) {
+          setCity(data.results[0].name);
+        } else {
+          setCity("Current Location");
+        }
+
+
+        getWeatherByCoordinates(latitude, longitude);
+
+      },
+
+      async (error) => {
+
+        console.log("GPS Error:", error.message);
+
+        // FALLBACK TO IP LOCATION
+        const response = await fetch("https://ipwho.is/");
+        const data = await response.json();
+
+        console.log("IP Location:", data.city);
+
+        setCity(data.city);
+
+        getWeatherByCoordinates(
+          data.latitude,
+          data.longitude
+        );
+
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+
+
+  } catch (err) {
+    setError("Unable to detect your location");
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function getWeatherByCoordinates( latitude,longitude ) {
+      
+  try{
+    setLoading(true);
+     
+const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
+      
+
+      const weatherResponse = await fetch(weatherUrl);
+      const weatherData = await weatherResponse.json();
+  
+          setSunrise(weatherData.daily.sunrise[0]);
+            setSunset(weatherData.daily.sunset[0]);
+
+        setWeather(weatherData.current);
+  } catch(err){
+    setError("Unabel to get the Current location Weather");
+
+  } finally {
+    setLoading(false);
+  }
+}
 
 
   async function searchWeather() {
