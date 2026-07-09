@@ -298,7 +298,20 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
       setLoading(false);
     }
   }
+function getWindDirection(deg) {
+  const directions = [
+    "N",
+    "NE",
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+  ];
 
+  return directions[Math.round(deg / 45) % 8];
+}
  return (
   <div className="app-container">
     <h1>Weather App</h1>
@@ -373,12 +386,14 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
             <div className="label">Current Temperature</div>
           </div>
 
-          <div className="info-card">
-                  <h3>Wind</h3>
+    <div className="info-card">
+  <h3>Wind</h3>
 
   <div className="wind-compass">
-
     <span className="north">N</span>
+    <span className="east">E</span>
+    <span className="south">S</span>
+    <span className="west">W</span>
 
     <img
       src="/navigation-arrow-fill-svgrepo-com.svg"
@@ -388,14 +403,9 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
         transform: `translate(-50%, -50%) rotate(${weather.wind_direction_10m}deg)`
       }}
     />
-
   </div>
 
-  <div className="value">{weather.wind_speed_10m} km/h</div>
-
-  <div className="label">
-    {weather.wind_direction_10m}°
-  </div>
+  
 
 </div>
 
@@ -423,15 +433,11 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
             <div className="label">Visibility</div>
           </div>
 
-          <div className="info-card">
-            <h3>Wind Direction</h3>
-            <div className="value">{weather.wind_direction_10m}°</div>
-            <div className="label">Direction</div>
-          </div>
+          
 
         </div>
-
-      </div>
+</div>
+     
     )}
   </div>
 );
