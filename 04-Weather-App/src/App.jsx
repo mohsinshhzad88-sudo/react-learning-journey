@@ -235,7 +235,7 @@ async function getWeatherByCoordinates( latitude,longitude ) {
   try{
     setLoading(true);
      
-const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
+const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,surface_pressure,visibility,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
       
 
       const weatherResponse = await fetch(weatherUrl);
@@ -281,21 +281,17 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
       const latitude = data.results[0].latitude;
       const longitude = data.results[0].longitude;
 
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,surface_pressure,visibility,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
 
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,is_day&daily=sunrise,sunset&timezone=auto`;
-      
-      
-  
+              const weatherResponse = await fetch(weatherUrl);
+             const weatherData = await weatherResponse.json();
 
-      const weatherResponse = await fetch(weatherUrl);
-      const weatherData = await weatherResponse.json();
+               console.log(weatherData);
 
-      console.log(weatherData.daily);
-
-      setSunrise(weatherData.daily.sunrise[0]);
-      setSunset(weatherData.daily.sunset[0]);
-
-      setWeather(weatherData.current);
+                  setSunrise(weatherData.daily.sunrise[0]);
+                  setSunset(weatherData.daily.sunset[0]);
+                  setWeather(weatherData.current);
+                  
     } catch (err) {
       setError("Something went wrong");
     } finally {
@@ -303,93 +299,118 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
     }
   }
 
-  return (
-
-    
+ return (
   <div className="app-container">
     <h1>Weather App</h1>
-    
-    <form onSubmit={(e) => { e.preventDefault(); searchWeather(); }} className="search-form">
-      <input 
-        type="text" 
-        placeholder="Enter your city" 
-        value={city} 
-        onChange={(e) => setCity(e.target.value)} 
+
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        searchWeather();
+      }}
+      className="search-form"
+    >
+      <input
+        type="text"
+        placeholder="Enter your city"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
         className="search-input"
       />
+
       <button type="submit" className="search-button">
         Search
       </button>
     </form>
 
-    {/* LOADING */}
     {loading && <p className="loading-text">Loading...</p>}
 
-    {/* ERROR */}
     {error && <p className="error-text">{error}</p>}
 
-    {/* WEATHER */}
     {weather && (
       <div className="weather-card">
+
         <div
-  ref={iconRef}
-  style={{
-    width: "150px",
-    height: "150px",
-    margin: "0 auto",
-    
-  }}
-  
-></div>
-<div className="sun-path">
+          ref={iconRef}
+          style={{
+            width: "150px",
+            height: "150px",
+            margin: "0 auto",
+          }}
+        ></div>
 
-  <div
-  className="sun"
-  style={{
-    left: `${sunProgress * 100}%`,
-    bottom: `${Math.sin(sunProgress * Math.PI) * 150}px`,
-    opacity: Math.sin(sunProgress * Math.PI),
-    transform: "translateX(-50%)"
-  }}
->
-  ☀️
-  </div>
+        <div className="sun-path">
+          <div
+            className="sun"
+            style={{
+              left: `${sunProgress * 100}%`,
+              bottom: `${Math.sin(sunProgress * Math.PI) * 150}px`,
+              opacity: Math.sin(sunProgress * Math.PI),
+              transform: "translateX(-50%)",
+            }}
+          >
+            ☀️
+          </div>
 
-  <span className="sunrise-label">
-    <img src="sunrise-svgrepo-com (1).svg" alt="" width={50}/>
-    {sunrise && sunrise.slice(11,16)}
-  </span>
+          <span className="sunrise-label">
+            <img src="sunrise-svgrepo-com (1).svg" alt="" width={50} />
+            {sunrise && sunrise.slice(11, 16)}
+          </span>
 
-  <span className="sunset-label">
-    <img src="sunset.svg" alt="" width={50}/>
-     {sunset && sunset.slice(11,16)}
-  </span>
-
-</div>
-        <h2>Weather Info</h2>
-        <div className="weather-details">
-          <p className="weather-item">
-             <span>Sunrise:</span>
-          <span className="weather-value">
-         {sunrise && sunrise.slice(11,16)}
-            </span>
-           </p>
-
-<p className="weather-item">
-  <span>Sunset:</span>
-  <span className="weather-value">
-    {sunset && sunset.slice(11,16)}
-  </span>
-</p>
-          <p className="weather-item">
-            <span>Temperature:</span> 
-            <span className="weather-value">{weather.temperature_2m}°C</span>
-          </p>
-          <p className="weather-item">
-            <span>Wind Speed:</span> 
-            <span className="weather-value">{weather.wind_speed_10m} km/h</span>
-          </p>
+          <span className="sunset-label">
+            <img src="sunset.svg" alt="" width={50} />
+            {sunset && sunset.slice(11, 16)}
+          </span>
         </div>
+
+        <h2>Weather Conditions</h2>
+
+        <div className="weather-grid">
+
+          <div className="info-card">
+            <h3>Temperature</h3>
+            <div className="value">{weather.temperature_2m}°C</div>
+            <div className="label">Current Temperature</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Wind</h3>
+            <div className="value">{weather.wind_speed_10m} km/h</div>
+            <div className="label">Wind Speed</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Humidity</h3>
+            <div className="value">{weather.relative_humidity_2m}%</div>
+            <div className="label">Relative Humidity</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Pressure</h3>
+            <div className="value">{weather.surface_pressure} hPa</div>
+            <div className="label">Surface Pressure</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Feels Like</h3>
+            <div className="value">{weather.apparent_temperature}°C</div>
+            <div className="label">Apparent Temperature</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Visibility</h3>
+            <div className="value">{weather.visibility} m</div>
+            <div className="label">Visibility</div>
+          </div>
+
+          <div className="info-card">
+            <h3>Wind Direction</h3>
+            <div className="value">{weather.wind_direction_10m}°</div>
+            <div className="label">Direction</div>
+          </div>
+
+        </div>
+
       </div>
     )}
   </div>

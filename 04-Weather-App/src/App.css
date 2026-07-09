@@ -170,3 +170,42 @@ h1 {
   bottom: -30px;
   font-size: 14px;
 }
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  color: rgb(16, 0, 0);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+}
+
+.info-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 34px;
+  font-weight: bold;
+  margin: 15px 0 8px;
+}
+
+.label {
+  color: #d9d9d9;
+  font-size: 14px;
+}
