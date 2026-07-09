@@ -240,9 +240,16 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
 
       const weatherResponse = await fetch(weatherUrl);
       const weatherData = await weatherResponse.json();
-  
+           
+           console.log(weatherData.daily);
+           console.log(weatherData.daily.sunrise);
+           console.log(weatherData.daily.sunset);
+
+           
           setSunrise(weatherData.daily.sunrise[0]);
             setSunset(weatherData.daily.sunset[0]);
+
+          
 
         setWeather(weatherData.current);
   } catch(err){
@@ -291,6 +298,9 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
                   setSunrise(weatherData.daily.sunrise[0]);
                   setSunset(weatherData.daily.sunset[0]);
                   setWeather(weatherData.current);
+                  
+                console.log("Sunrise:", weatherData.daily.sunrise[0]);
+                 console.log("Sunset:", weatherData.daily.sunset[0]);
 
     } catch (err) {
       setError("Something went wrong");

@@ -167,6 +167,7 @@ h1 {
 .sunrise-label {
   position: absolute;
   left: 0;
+  color:black;
   bottom: -30px;
   font-size: 14px;
 }
@@ -175,6 +176,7 @@ h1 {
 .sunset-label {
   position: absolute;
   right: 0;
+  color:black;
   bottom: -30px;
   font-size: 14px;
 }
