@@ -291,7 +291,7 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
                   setSunrise(weatherData.daily.sunrise[0]);
                   setSunset(weatherData.daily.sunset[0]);
                   setWeather(weatherData.current);
-                  
+
     } catch (err) {
       setError("Something went wrong");
     } finally {
@@ -374,10 +374,30 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
           </div>
 
           <div className="info-card">
-            <h3>Wind</h3>
-            <div className="value">{weather.wind_speed_10m} km/h</div>
-            <div className="label">Wind Speed</div>
-          </div>
+                  <h3>Wind</h3>
+
+  <div className="wind-compass">
+
+    <span className="north">N</span>
+
+    <img
+      src="/navigation-arrow-fill-svgrepo-com.svg"
+      alt="Wind Direction"
+      className="wind-arrow"
+      style={{
+        transform: `translate(-50%, -50%) rotate(${weather.wind_direction_10m}deg)`
+      }}
+    />
+
+  </div>
+
+  <div className="value">{weather.wind_speed_10m} km/h</div>
+
+  <div className="label">
+    {weather.wind_direction_10m}°
+  </div>
+
+</div>
 
           <div className="info-card">
             <h3>Humidity</h3>

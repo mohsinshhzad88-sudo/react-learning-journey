@@ -209,3 +209,29 @@ h1 {
   color: #d9d9d9;
   font-size: 14px;
 }
+.wind-compass {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  border: 2px dashed rgba(255,255,255,.3);
+  border-radius: 50%;
+}
+
+.wind-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55px;
+  height: 55px;
+  transition: transform 0.8s ease;
+}
+
+.north {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: white;
+}
