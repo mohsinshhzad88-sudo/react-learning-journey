@@ -25,6 +25,7 @@ function App() {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [weather, setWeather] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const iconRef = useRef(null); 
@@ -240,6 +241,7 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
 
       const weatherResponse = await fetch(weatherUrl);
       const weatherData = await weatherResponse.json();
+      
            
            console.log(weatherData.daily);
            console.log(weatherData.daily.sunrise);
@@ -259,7 +261,34 @@ const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&
     setLoading(false);
   }
 }
+    
+async function getCitySuggestions(searchText) 
+    {
+      if(searchText.trim().length<2) {
+        setSuggestions([])
+        return;
+    }
+     
+    try{
+      const response = await fetch (
+         `https://geocoding-api.open-meteo.com/v1/search?name=${searchText}&count=5`
+      );
 
+      const data = await response.json();
+
+      if (data.results) {
+         setSuggestions(data.results);
+      }
+          else {
+            setSuggestions([]);
+          }  
+
+         } catch (error) {
+              console.log(error);
+              setSuggestions([]);
+
+            }
+          }
 
   async function searchWeather() {
     console.log("Search button clicked");
@@ -337,10 +366,29 @@ function getWindDirection(deg) {
         type="text"
         placeholder="Enter your city"
         value={city}
-        onChange={(e) => setCity(e.target.value)}
+        onChange={(e) =>
+         { setCity(e.target.value);
+          getCitySuggestions(e.target.value); }}
         className="search-input"
       />
 
+
+         {suggestions.length > 0 && (
+    <div className="suggestions">
+      {suggestions.map((place) => (
+        <div
+          key={`${place.latitude}-${place.longitude}`}
+          className="suggestion-item"
+          onClick={() => {
+            setCity(place.name);
+            setSuggestions([]);
+          }}
+        >
+          {place.name}, {place.country}
+        </div>
+      ))}
+    </div>
+  )}
       <button type="submit" className="search-button">
         Search
       </button>
